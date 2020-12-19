@@ -11,6 +11,7 @@ jobs:
       MARCH: "rv32i"
       MABI: "ilp32"
       TARGET: "riscv32-unknown-elf"
+      PREFIX: "/opt/riscv/$MARCH"
 
     steps:
 #     - name: Checkout riscv-toolchain
@@ -25,11 +26,6 @@ jobs:
     - name: Checkout riscv-binutils
       run: git clone --depth 1 https://github.com/riscv/riscv-binutils-gdb
       
-    - name: Setting up build environment
-      run: |
-        export PREFIX="/opt/riscv/$MARCH"
-        export PATH="$PATH:$PREFIX/bin"
-      
     - name: Show build environment
       run: |
         echo $PREFIX
@@ -39,7 +35,8 @@ jobs:
         
     - name: Configure binutils
       run: |
-        mkdir build
+        export PATH="$PATH:$PREFIX/bin"
+        mkdir build-binutils
         cd build-binutils
         
         ../riscv-binutils-gdb/configure \
@@ -65,15 +62,16 @@ jobs:
       
     - name: Compile binutils
       working-directory: build-binutils
-      run: make -j8
+      run: PATH="$PATH:$PREFIX/bin" make -j8
       
     - name: Install binutils
       working-directory: build-binutils
-      run: make install
+      run: PATH="$PATH:$PREFIX/bin" make install
       
     - name: Compile gcc
       run: |
-        mkdir build
+        export PATH="$PATH:$PREFIX/bin"
+        mkdir build-gcc
         cd build-gcc
         
         ../riscv-gcc/configure \
@@ -98,11 +96,11 @@ jobs:
       
     - name: Compile gcc
       working-directory: build-gcc
-      run: make -j8
+      run: PATH="$PATH:$PREFIX/bin" make -j8
       
     - name: Install gcc
       working-directory: build-gcc
-      run: make install
+      run: PATH="$PATH:$PREFIX/bin" make install
       
     - name: Result
       run: find $PREFIX
