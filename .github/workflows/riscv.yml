@@ -90,6 +90,7 @@ jobs:
           --host=x86_64-linux-gnu \
           --target=$TARGET \
           --enable-languages=c,c++ \
+          --with-newlib \
           --without-headers \
           --disable-werror \
           --disable-shared \
@@ -105,7 +106,6 @@ jobs:
           --disable-tm-clone-registry \
           --disable-libitm --disable-libsanitizer \
           --disable-libquadmath --disable-libquadmath-support \
-          --disable-libvtv, --disable-libcilkrts, --disable-libstdc++-v3 \
           --disable-multilib \
           --enable-multiarch \
           --with-arch=$MARCH --with-abi=$MABI \
