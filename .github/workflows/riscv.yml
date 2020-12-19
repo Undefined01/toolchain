@@ -16,7 +16,7 @@ jobs:
       run: git clone --depth 1 https://github.com/riscv/riscv-gcc
       
     - name: Configure
-      working-directory: riscv-gnu-toolchain
+      working-directory: riscv-gcc
       run: |
         mkdir build
         cd build
@@ -30,8 +30,12 @@ jobs:
                      --program-prefix=riscv32-none-elf-
       
     - name: Compile
-      working-directory: riscv-gnu-toolchain/build
+      working-directory: riscv-gcc/build
       run: make -j4
+      
+    - name: Install
+      working-directory: riscv-gcc/build
+      run: make install
       
     - name: Result
       run: find /opt/riscv/rv32i
