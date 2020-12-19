@@ -7,11 +7,17 @@ on:
 jobs:
   build-rv32i-ilp32:
     runs-on: ubuntu-latest
-    env:
-      MARCH: "rv32i"
-      MABI: "ilp32"
-      TARGET: "riscv32-unknown-elf"
-      PREFIX: "/opt/riscv/rv32i"
+    strategy:
+      matrix:
+        include:
+        - MARCH: "rv32i"
+          MABI: "ilp32"
+          TARGET: "riscv32-unknown-elf"
+          PREFIX: "/opt/riscv/rv32i"
+        - MARCH: "rv64gc"
+          MABI: "lp64d"
+          TARGET: "riscv64-unknown-elf"
+          PREFIX: "/opt/riscv/rv64i"
 
     steps:
     - name: Install build dependencies
@@ -135,6 +141,9 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: rv32i-ilp32
+    - uses: actions/download-artifact@v2
+      with:
+        name: rv64i-lp64d
     
     - name: Create Release
       id: create_release
@@ -155,4 +164,13 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: rv32i-ilp32.tar.xz
         asset_name: rv32i-ilp32.tar.xz
+        asset_content_type: application/x-compressed
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: rv64gc-lp64d.tar.xz
+        asset_name: rv64gc-lp64d.tar.xz
         asset_content_type: application/x-compressed
