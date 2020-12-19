@@ -23,13 +23,13 @@ jobs:
     - name: Checkout riscv-gcc
       uses: actions/checkout@v2
       with:
-        repository: https://github.com/riscv/riscv-gcc
+        repository: riscv/riscv-gcc
         path: riscv-gcc
       
     - name: Checkout riscv-binutils
       uses: actions/checkout@v2
       with:
-        repository: https://github.com/riscv/riscv-binutils-gdb
+        repository: riscv/riscv-binutils-gdb
         path: riscv-binutils-gdb
       
     - name: Show build environment
