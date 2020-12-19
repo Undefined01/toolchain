@@ -11,7 +11,7 @@ jobs:
       MARCH: "rv32i"
       MABI: "ilp32"
       TARGET: "riscv32-unknown-elf"
-      PREFIX: "/opt/riscv/$MARCH"
+      PREFIX: "/opt/riscv/rv32i"
 
     steps:
 #     - name: Checkout riscv-toolchain
@@ -62,7 +62,7 @@ jobs:
       
     - name: Compile binutils
       working-directory: build-binutils
-      run: PATH="$PATH:$PREFIX/bin" make -j8
+      run: PATH="$PATH:$PREFIX/bin" make -j4
       
     - name: Install binutils
       working-directory: build-binutils
@@ -96,7 +96,7 @@ jobs:
       
     - name: Compile gcc
       working-directory: build-gcc
-      run: PATH="$PATH:$PREFIX/bin" make -j8
+      run: PATH="$PATH:$PREFIX/bin" make -j4
       
     - name: Install gcc
       working-directory: build-gcc
