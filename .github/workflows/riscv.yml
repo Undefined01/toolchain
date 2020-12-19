@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build_rv32i:
+  build_rv64i:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,10 +27,15 @@ jobs:
           --host=x86_64-linux-gnu \
           --target=riscv64-linux-gnu \
           --enable-languages=c \
-          --disable-shared --disable-threads \
-          --disable-libssp --disable-libmudflap \
+          --disable-shared \
+          --disable-threads \
+          --disable-tls \
+          --disable-libmudflap \
+          --disable-libssp \
+          --disable-libgomp \
+          --disable-nls \
+          --disable-tm-clone-registry \
           --disable-libitm --disable-libsanitizer \
-          --disable-libgomp --disable-nls \
           --disable-libquadmath --disable-libquadmath-support \
           --disable-multilib \
           --enable-multiarch \
@@ -39,11 +44,11 @@ jobs:
       
     - name: Compile
       working-directory: build
-      run: make -j4
+      run: make -j4 all-gcc
       
     - name: Install
       working-directory: build
-      run: make install
+      run: make install-gcc
       
     - name: Result
       run: find /opt/riscv/rv32i
