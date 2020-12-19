@@ -31,17 +31,22 @@ jobs:
       with:
         repository: riscv/riscv-binutils-gdb
         path: riscv-binutils-gdb
+        
+        
+    - name: Setting up build environment
+      run: |
+        echo "$PREFIX/bin" >> $GITHUB_PATH
       
     - name: Show build environment
       run: |
-        echo $PREFIX
-        echo $TARGET
-        echo $PATH
+        echo TARGET: $TARGET
+        echo PREFIX: $PREFIX
+        echo PATH: $PATH
+        echo "------ gcc version ------"
         gcc -v
         
     - name: Configure binutils
       run: |
-        export PATH="$PATH:$PREFIX/bin"
         mkdir build-binutils
         cd build-binutils
         
@@ -69,15 +74,14 @@ jobs:
       
     - name: Compile binutils
       working-directory: build-binutils
-      run: PATH="$PATH:$PREFIX/bin" make -j4
+      run: make -j4
       
     - name: Install binutils
       working-directory: build-binutils
-      run: PATH="$PATH:$PREFIX/bin" make install
+      run: make install
       
     - name: Configure gcc
       run: |
-        export PATH="$PATH:$PREFIX/bin"
         mkdir build-gcc
         cd build-gcc
         
@@ -104,11 +108,11 @@ jobs:
       
     - name: Compile gcc
       working-directory: build-gcc
-      run: PATH="$PATH:$PREFIX/bin" make -j4
+      run: make -j4
       
     - name: Install gcc
       working-directory: build-gcc
-      run: PATH="$PATH:$PREFIX/bin" make install
+      run: make install
       
     - name: Generate prebuilt binary tarball
       run: tar -C $PREFIX/.. -cvJf $MARCH-$MABI.tar.xz ${PREFIX##*/}
