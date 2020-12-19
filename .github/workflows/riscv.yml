@@ -11,8 +11,6 @@ jobs:
       MARCH: "rv32i"
       MABI: "ilp32"
       TARGET: "riscv32-unknown-elf"
-      PREFIX: "/opt/riscv/$MARCH"
-      PATH: "$PATH:$PREFIX/bin"
 
     steps:
 #     - name: Checkout riscv-toolchain
@@ -29,11 +27,16 @@ jobs:
       
     - name: Setting up build environment
       run: |
+        export PREFIX="/opt/riscv/$MARCH"
+        export PATH="$PATH:$PREFIX/bin"
+      
+    - name: Show build environment
+      run: |
         echo $PREFIX
         echo $TARGET
         echo $PATH
         gcc -v
-      
+        
     - name: Configure binutils
       run: |
         mkdir build
