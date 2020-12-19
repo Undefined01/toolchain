@@ -12,15 +12,17 @@ jobs:
 #     - name: Checkout riscv-toolchain
 #       run: git clone --depth 1 --recursive https://github.com/riscv/riscv-gnu-toolchain
 
+    - name: Install build dependencies
+      run: sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+
     - name: Checkout riscv-gcc
       run: git clone --depth 1 https://github.com/riscv/riscv-gcc
       
     - name: Configure
-      working-directory: riscv-gcc
       run: |
         mkdir build
         cd build
-        ../configure --prefix=/opt/riscv/rv32i \
+        ../riscv-gcc/configure --prefix=/opt/riscv/rv32i \
                      --enable-languages=c \
                      --disable-libitm --disable-libsanitizer --disable-libquadmath --disable-libquadmath-support \
                      --enable-multiarch --disable-multilib \
@@ -30,11 +32,11 @@ jobs:
                      --program-prefix=riscv32-none-elf-
       
     - name: Compile
-      working-directory: riscv-gcc/build
+      working-directory: build
       run: make -j4
       
     - name: Install
-      working-directory: riscv-gcc/build
+      working-directory: build
       run: make install
       
     - name: Result
