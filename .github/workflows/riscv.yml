@@ -86,7 +86,7 @@ jobs:
           --prefix=$PREFIX \
           --host=x86_64-linux-gnu \
           --target=$TARGET \
-          --enable-languages=c \
+          --enable-languages=c,c++ \
           --disable-shared \
           --disable-threads \
           --disable-plugin \
