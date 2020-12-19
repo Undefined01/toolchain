@@ -52,11 +52,14 @@ jobs:
           --host="x86_64-linux-gnu" \
           --target="$TARGET" \
           --with-sysroot \
+          --without-headers \
           --disable-werror \
           --disable-shared \
           --disable-threads \
           --disable-plugin \
           --disable-tls \
+          --disable-decimal-float \
+          --disable-libatomic \
           --disable-libmudflap \
           --disable-libssp \
           --disable-libgomp \
@@ -64,6 +67,7 @@ jobs:
           --disable-tm-clone-registry \
           --disable-libitm --disable-libsanitizer \
           --disable-libquadmath --disable-libquadmath-support \
+          --disable-libvtv, --disable-libcilkrts, --disable-libstdc++-v3 \
           --disable-multilib \
           --enable-multiarch \
           --with-arch=$MARCH --with-abi=$MABI \
@@ -87,10 +91,14 @@ jobs:
           --host=x86_64-linux-gnu \
           --target=$TARGET \
           --enable-languages=c,c++ \
+          --without-headers \
+          --disable-werror \
           --disable-shared \
           --disable-threads \
           --disable-plugin \
           --disable-tls \
+          --disable-decimal-float \
+          --disable-libatomic \
           --disable-libmudflap \
           --disable-libssp \
           --disable-libgomp \
@@ -98,6 +106,7 @@ jobs:
           --disable-tm-clone-registry \
           --disable-libitm --disable-libsanitizer \
           --disable-libquadmath --disable-libquadmath-support \
+          --disable-libvtv, --disable-libcilkrts, --disable-libstdc++-v3 \
           --disable-multilib \
           --enable-multiarch \
           --with-arch=$MARCH --with-abi=$MABI \
@@ -114,7 +123,6 @@ jobs:
     - name: Generate prebuilt binary tarball
       run: |
         tar -C $PREFIX/.. -cvJf $MARCH-$MABI.tar.xz ${PREFIX##*/}
-        tar -C $PREFIX/.. --exclude share -cvJf $MARCH-$MABI-min.tar.xz ${PREFIX##*/}
       
     - uses: actions/upload-artifact@v2
       with:
@@ -149,13 +157,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: rv32i-ilp32.tar.xz
         asset_name: rv32i-ilp32.tar.xz
-        asset_content_type: application/x-compressed
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: rv32i-ilp32-min.tar.xz
-        asset_name: rv32i-ilp32-min.tar.xz
         asset_content_type: application/x-compressed
