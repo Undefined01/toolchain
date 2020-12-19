@@ -86,7 +86,6 @@ jobs:
           --prefix=$PREFIX \
           --host=x86_64-linux-gnu \
           --target=$TARGET \
-          --with-sysroot \
           --enable-languages=c \
           --disable-shared \
           --disable-threads \
