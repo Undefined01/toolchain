@@ -84,7 +84,7 @@ jobs:
       
     - name: Install binutils
       working-directory: build-binutils
-      run: make install
+      run: sudo make install
       
     - name: Configure gcc
       run: |
@@ -122,7 +122,7 @@ jobs:
       
     - name: Install gcc
       working-directory: build-gcc
-      run: make install
+      run: sudo make install
       
     - name: Generate prebuilt binary tarball
       run: |
