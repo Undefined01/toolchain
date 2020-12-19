@@ -21,10 +21,16 @@ jobs:
       run: sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
 
     - name: Checkout riscv-gcc
-      run: git clone --depth 1 https://github.com/riscv/riscv-gcc
+      uses: actions/checkout@v2
+      with:
+        repository: https://github.com/riscv/riscv-gcc
+        path: riscv-gcc
       
     - name: Checkout riscv-binutils
-      run: git clone --depth 1 https://github.com/riscv/riscv-binutils-gdb
+      uses: actions/checkout@v2
+      with:
+        repository: https://github.com/riscv/riscv-binutils-gdb
+        path: riscv-binutils-gdb
       
     - name: Show build environment
       run: |
@@ -47,6 +53,7 @@ jobs:
           --disable-werror \
           --disable-shared \
           --disable-threads \
+          --disable-plugin \
           --disable-tls \
           --disable-libmudflap \
           --disable-libssp \
@@ -68,7 +75,7 @@ jobs:
       working-directory: build-binutils
       run: PATH="$PATH:$PREFIX/bin" make install
       
-    - name: Compile gcc
+    - name: Configure gcc
       run: |
         export PATH="$PATH:$PREFIX/bin"
         mkdir build-gcc
@@ -81,6 +88,7 @@ jobs:
           --enable-languages=c \
           --disable-shared \
           --disable-threads \
+          --disable-plugin \
           --disable-tls \
           --disable-libmudflap \
           --disable-libssp \
@@ -102,14 +110,11 @@ jobs:
       working-directory: build-gcc
       run: PATH="$PATH:$PREFIX/bin" make install
       
-    - name: Result
-      run: find $PREFIX
-      
-    - name: Tar
-      run: tar -C $PREFIX/.. -cJf $MARCH.tar.xz ${PREFIX##*/}
+    - name: Generate prebuilt binary tarball
+      run: tar -C $PREFIX/.. -cvJf $MARCH-$MABI.tar.xz ${PREFIX##*/}
       
     - uses: actions/upload-artifact@v2
       with:
-        name: rv32i
-        path: rv32i.tar.xz 
+        name: $MARCH-$MABI
+        path: $MARCH-$MABI.tar.xz
       
