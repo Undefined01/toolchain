@@ -5,8 +5,14 @@ on:
   pull_request:
 
 jobs:
-  build_rv64i:
+  build_rv32i:
     runs-on: ubuntu-latest
+    env:
+      MARCH: "rv32i"
+      MABI: "ilp32"
+      TARGET: "riscv32-unknown-elf"
+      PREFIX: "/opt/riscv/$MARCH"
+      PATH: "$PATH:$PREFIX/bin"
 
     steps:
 #     - name: Checkout riscv-toolchain
@@ -18,14 +24,59 @@ jobs:
     - name: Checkout riscv-gcc
       run: git clone --depth 1 https://github.com/riscv/riscv-gcc
       
-    - name: Configure
+    - name: Checkout riscv-binutils
+      run: git clone --depth 1 https://github.com/riscv/riscv-binutils-gdb
+      
+    - name: Setting up build environment
+      run: |
+        echo $PREFIX
+        echo $TARGET
+        echo $PATH
+        gcc -v
+      
+    - name: Configure binutils
       run: |
         mkdir build
-        cd build
+        cd build-binutils
+        
+        ../riscv-binutils-gdb/configure \
+          --prefix="$PREFIX" \
+          --host="x86_64-linux-gnu" \
+          --target="$TARGET" \
+          --with-sysroot \
+          --disable-werror \
+          --disable-shared \
+          --disable-threads \
+          --disable-tls \
+          --disable-libmudflap \
+          --disable-libssp \
+          --disable-libgomp \
+          --disable-nls \
+          --disable-tm-clone-registry \
+          --disable-libitm --disable-libsanitizer \
+          --disable-libquadmath --disable-libquadmath-support \
+          --disable-multilib \
+          --enable-multiarch \
+          --with-arch=$MARCH --with-abi=$MABI \
+          --program-prefix=${TARGET}-
+      
+    - name: Compile binutils
+      working-directory: build-binutils
+      run: make -j8
+      
+    - name: Install binutils
+      working-directory: build-binutils
+      run: make install
+      
+    - name: Compile gcc
+      run: |
+        mkdir build
+        cd build-gcc
+        
         ../riscv-gcc/configure \
-          --prefix=/opt/riscv/rv32i \
+          --prefix=$PREFIX \
           --host=x86_64-linux-gnu \
-          --target=riscv64-linux-gnu \
+          --target=$TARGET \
           --enable-languages=c \
           --disable-shared \
           --disable-threads \
@@ -39,22 +90,22 @@ jobs:
           --disable-libquadmath --disable-libquadmath-support \
           --disable-multilib \
           --enable-multiarch \
-          --with-arch=rv32i --with-abi=ilp32 \
-          --program-prefix=riscv32-none-elf-
+          --with-arch=$MARCH --with-abi=$MABI \
+          --program-prefix=${TARGET}-
       
-    - name: Compile
-      working-directory: build
-      run: make -j4 all-gcc
+    - name: Compile gcc
+      working-directory: build-gcc
+      run: make -j8
       
-    - name: Install
-      working-directory: build
-      run: make install-gcc
+    - name: Install gcc
+      working-directory: build-gcc
+      run: make install
       
     - name: Result
-      run: find /opt/riscv/rv32i
+      run: find $PREFIX
       
     - name: Tar
-      run: tar -C /opt/riscv -cJf rv32i.tar.xz rv32i
+      run: tar -C $PREFIX/.. -cJf $MARCH.tar.xz ${PREFIX##*/}
       
     - uses: actions/upload-artifact@v2
       with:
