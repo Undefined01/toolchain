@@ -22,14 +22,20 @@ jobs:
       run: |
         mkdir build
         cd build
-        ../riscv-gcc/configure --prefix=/opt/riscv/rv32i \
-                     --enable-languages=c \
-                     --disable-libitm --disable-libsanitizer --disable-libquadmath --disable-libquadmath-support \
-                     --enable-multiarch --disable-multilib \
-                     --with-arch=rv32i --with-abi=ilp32 \
-                     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
-                     --target=riscv64-linux-gnu \
-                     --program-prefix=riscv32-none-elf-
+        ../riscv-gcc/configure \
+          --prefix=/opt/riscv/rv32i \
+          --host=x86_64-linux-gnu \
+          --target=riscv64-linux-gnu \
+          --enable-languages=c \
+          --disable-shared --disable-threads \
+          --disable-libssp --disable-libmudflap \
+          --disable-libitm --disable-libsanitizer \
+          --disable-libgomp --disable-nls \
+          --disable-libquadmath --disable-libquadmath-support \
+          --disable-multilib \
+          --enable-multiarch \
+          --with-arch=rv32i --with-abi=ilp32 \
+          --program-prefix=riscv32-none-elf-
       
     - name: Compile
       working-directory: build
