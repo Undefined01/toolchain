@@ -14,9 +14,6 @@ jobs:
       PREFIX: "/opt/riscv/rv32i"
 
     steps:
-#     - name: Checkout riscv-toolchain
-#       run: git clone --depth 1 --recursive https://github.com/riscv/riscv-gnu-toolchain
-
     - name: Install build dependencies
       run: sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
 
@@ -119,6 +116,6 @@ jobs:
       
     - uses: actions/upload-artifact@v2
       with:
-        name: $MARCH-$MABI
-        path: $MARCH-$MABI.tar.xz
+        name: ${{ env.MARCH }}-${{ env.MABI }}
+        path: ${{ env.MARCH }}-${{ env.MABI }}.tar.xz
       
