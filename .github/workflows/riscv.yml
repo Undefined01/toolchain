@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build_rv32i:
+  build-rv32i-ilp32:
     runs-on: ubuntu-latest
     env:
       MARCH: "rv32i"
@@ -118,4 +118,33 @@ jobs:
       with:
         name: ${{ env.MARCH }}-${{ env.MABI }}
         path: ${{ env.MARCH }}-${{ env.MABI }}.tar.xz
-      
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build-rv32i-ilp32
+    
+    steps:
+    - uses: actions/upload-artifact@v2
+      with:
+        name: rv32i-ilp32
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: rv32i-ilp32.tar.xz
+        asset_name: rv32i-ilp32.tar.xz
+        asset_content_type: application/x-compressed
