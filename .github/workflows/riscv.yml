@@ -87,7 +87,7 @@ jobs:
           --host=x86_64-linux-gnu \
           --target=$TARGET \
           --with-sysroot \
-          --enable-languages=c,c++ \
+          --enable-languages=c \
           --disable-shared \
           --disable-threads \
           --disable-plugin \
