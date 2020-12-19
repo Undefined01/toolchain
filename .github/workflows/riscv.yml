@@ -67,6 +67,7 @@ jobs:
           --disable-tm-clone-registry \
           --disable-libitm --disable-libsanitizer \
           --disable-libquadmath --disable-libquadmath-support \
+          --disable-libstdcxx \
           --disable-multilib \
           --enable-multiarch \
           --with-arch=$MARCH --with-abi=$MABI \
