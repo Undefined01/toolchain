@@ -145,7 +145,7 @@ jobs:
         name: rv32i-ilp32
     - uses: actions/download-artifact@v2
       with:
-        name: rv64i-lp64d
+        name: rv64gc-lp64d
     
     - name: Create Release
       id: create_release
