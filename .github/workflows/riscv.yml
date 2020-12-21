@@ -38,8 +38,10 @@ jobs:
         
     - name: Setting up build environment
       run: |
+        echo mkdir -p $PREFIX
         mkdir -p $PREFIX
         echo "$PREFIX/bin" >> $GITHUB_PATH
+      shell: bash
       
     - name: Show build environment
       run: |
