@@ -38,6 +38,7 @@ jobs:
         
     - name: Setting up build environment
       run: |
+        mkdir -p $PREFIX
         echo "$PREFIX/bin" >> $GITHUB_PATH
       
     - name: Show build environment
@@ -84,7 +85,7 @@ jobs:
       
     - name: Install binutils
       working-directory: build-binutils
-      run: sudo make install
+      run: make install
       
     - name: Configure gcc
       run: |
@@ -122,7 +123,7 @@ jobs:
       
     - name: Install gcc
       working-directory: build-gcc
-      run: sudo make install
+      run: make install
       
     - name: Generate prebuilt binary tarball
       run: |
